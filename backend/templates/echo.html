@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+    <title>WebSocker Demo</title>
+</head>
+<body>
+<h1>WebSocket Demo</h1>
+<div id="log"></div>
+<br>
+<form id="form">
+    <label for="text">Input: </label>
+    <input type="text" id="text" autofocus>
+</form>
+<script>
+    let clients = [];
+    let username = '{{ username}}';
+
+    window.addEventListener("DOMContentLoaded", () => {
+        setTimeout(sendPing, 15000);
+    })
+    const log = (text, color) => {
+        document.getElementById('log').innerHTML += `<span style="color: ${color}">${text}</span><br>`;
+    };
+
+    const socket = new WebSocket('ws://' + location.host + '/api');
+    socket.onopen = ws => {
+        let message = {
+            message: 'open',
+            user_id: `{{ user_id }}`,
+            username: '{{ username }}',
+            text: 'Connection is open.'
+        }
+        socket.send(JSON.stringify(message));
+        console.log(`User {{ username }} is  connected.`);
+    };
+    socket.onmessage = ev => {
+        // msg = JSON.stringify(ev.data);
+        let msg = JSON.parse(ev.data);
+        if (msg.message === 'pong') {
+            setTimeout(sendPing, 15000);
+            return;
+        }
+        log(msg.username + ' => ' + msg.text, 'blue');
+    }
+
+    socket.onclose = ev => {
+        console.log('Connection is closed.');
+        console.log('User {{username}} is disconnected.');
+    }
+    // socket.addEventListener('pong', ev => {
+    //     sendPing()
+    // socket.send(ev.data);
+    // log('<<< ' + ev.data, 'blue');
+    //});
+
+    document.getElementById('form').onsubmit = ev => {
+        ev.preventDefault();
+        const textField = document.getElementById('text');
+        let message = {
+            message: 'message',
+            user_id: `{{ user_id }}`,
+            username: '{{ username }}',
+            text: textField.value
+        }
+
+        // log('>>> ' + JSON.stringify(message), 'red');
+        log(username + ' => ' + textField.value, 'red');
+        socket.send(JSON.stringify(message));
+        textField.value = '';
+    };
+
+    function sendPing() {
+        let message = {
+            message: 'ping',
+            user_id: `{{ user_id }}`,
+            username: '{{ username }}',
+            text: 'Ping'
+        }
+        socket.send(JSON.stringify(message));
+    }
+
+    // {#socket.addEventListener('connection', (ws) => {#}
+    // {#    clients.push({user_id:`{{ user_id }}`, username: '{{ username }}', ws: ws});#}
+    // {#    socket.send(JSON.stringify({username: '{{ username }}', text: 'Connected'}));#}
+    // {#    console.log(`User {{ username }} is  connected.`);#}
+
+
+</script>
+</body>
+</html>

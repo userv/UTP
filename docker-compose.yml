@@ -1,0 +1,74 @@
+version: '3.3'
+services:
+    web:
+        environment:
+            - CHATAPP="1"
+        labels:
+            container.owner: "${USER}"
+        ulimits:
+            nofile:
+                soft: 65535
+                hard: 65535
+            nproc:
+                soft: 12288
+                hard: 12288
+        image: nginx:latest
+        hostname: web
+        domainname: chat.bg
+        privileged: true
+        volumes:
+            - ./nginx-conf:/etc/nginx
+            - ./www-data:/usr/share/nginx/html
+        cap_add:
+            - NET_ADMIN
+            - NET_RAW
+        ports:
+            - "8081:8081"
+            - "8082:8082"
+        depends_on:
+            - "backend"
+        networks:
+            default:
+                aliases:
+                    - web.chat.bg
+    backend:
+        image: python:3.10
+        hostname: backend
+        command: /opt/docker-entrypoint.sh
+        domainname: chat.bg
+        privileged: true
+        volumes:
+            - ./backend:/opt
+        cap_add:
+            - NET_ADMIN
+            - NET_RAW
+        ports:
+            - "10500:5000"
+            - "5000:5000"
+        depends_on:
+            - "database"
+        networks:
+            default:
+                aliases:
+                    - backend.chat.bg
+
+    database:
+        image: postgres:latest
+        hostname: db
+        restart: always
+        domainname: chat.bg
+        privileged: true
+        environment:
+            POSTGRES_PASSWORD: rsstest
+            POSTGRES_USER: ros
+            POSTGRES_DB: chatdb
+        volumes:
+            - ./postgres-data:/var/lib/postgresql/data
+        ports:
+            - "15432:5432"
+            - "5432:5432"
+            
+        networks:
+            default:
+                aliases:
+                    - db.chat.bg

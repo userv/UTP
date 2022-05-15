@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %}Грешка при влизане{% endblock %}
+{% block content %}
+    <div id="error">
+    <ul>
+    {% for error in errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+    </div>
+    <h1>Вход в Микроблог</h1>
+    <form action="/v1/login" method="POST">
+        <div class="form-container">
+            <div class="form-item">
+            <label for="username">Потребителско име</label>
+            </div>
+            <div class="form-item">
+            <input type="text" name="username">
+            </div>
+            <div class="form-item">
+            <label for="password">Парола</label>
+            </div>
+            <div class="form-item">
+            <input type="password" name="password">
+            </div>
+            <div align="form-item">
+            <input type="submit" value="Вход">
+            </div>
+        </div>
+    </form>
+{% endblock %}

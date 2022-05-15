@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрирани потребители</title>
+    <style>
+        html { color-scheme: light dark; }
+        body { width: 35em; margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif; }
+    </style>
+</head>
+<body>
+    <h1>Списък на регистрираните потребители</h1>
+    <ol>
+        {% for username in usernames %}
+        <li>{{ username }}</li>
+        {% endfor %}
+    </ol>
+</body>
+</html>
