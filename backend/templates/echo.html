@@ -16,7 +16,7 @@
     let username = '{{ username}}';
 
     window.addEventListener("DOMContentLoaded", () => {
-        setTimeout(sendPing, 15000);
+        setTimeout(sendPing, 35000);
     })
     const log = (text, color) => {
         document.getElementById('log').innerHTML += `<span style="color: ${color}">${text}</span><br>`;
@@ -31,27 +31,29 @@
             text: 'Connection is open.'
         }
         socket.send(JSON.stringify(message));
+        message.message = 'connected';
+        message.text = 'connected';
+        socket.send(JSON.stringify(message));
         console.log(`User {{ username }} is  connected.`);
     };
+
     socket.onmessage = ev => {
-        // msg = JSON.stringify(ev.data);
-        let msg = JSON.parse(ev.data);
-        if (msg.message === 'pong') {
-            setTimeout(sendPing, 15000);
+        let message = JSON.parse(ev.data);
+        if (message.message === 'pong') {
+            setTimeout(sendPing, 35000);
             return;
         }
-        log(msg.username + ' => ' + msg.text, 'blue');
+        if (message.message === 'connected') {
+            log(message.username + ' is ' + message.text, 'green');
+            return;
+        }
+        log(message.username + ' => ' + message.text, 'blue');
     }
 
     socket.onclose = ev => {
         console.log('Connection is closed.');
         console.log('User {{username}} is disconnected.');
     }
-    // socket.addEventListener('pong', ev => {
-    //     sendPing()
-    // socket.send(ev.data);
-    // log('<<< ' + ev.data, 'blue');
-    //});
 
     document.getElementById('form').onsubmit = ev => {
         ev.preventDefault();
@@ -63,7 +65,6 @@
             text: textField.value
         }
 
-        // log('>>> ' + JSON.stringify(message), 'red');
         log(username + ' => ' + textField.value, 'red');
         socket.send(JSON.stringify(message));
         textField.value = '';
@@ -78,12 +79,6 @@
         }
         socket.send(JSON.stringify(message));
     }
-
-    // {#socket.addEventListener('connection', (ws) => {#}
-    // {#    clients.push({user_id:`{{ user_id }}`, username: '{{ username }}', ws: ws});#}
-    // {#    socket.send(JSON.stringify({username: '{{ username }}', text: 'Connected'}));#}
-    // {#    console.log(`User {{ username }} is  connected.`);#}
-
 
 </script>
 </body>

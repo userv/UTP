@@ -177,10 +177,11 @@ def ws_api(ws):
         text = json_data['text']
         if msg == 'open':
             clients[user_id] = ws
+            # ws.send(json.dumps({'message': 'connected', 'user_id': user_id, 'username': username, 'text': 'connected'}))
         if msg == 'ping':
             ws.send(json.dumps({'message': 'pong'}))
         for client_id in clients:
-            if client_id != user_id and msg == 'message':
+            if client_id != user_id and msg == 'message' or msg == 'connected':
                 clients[client_id].send(data)
 
 
