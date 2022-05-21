@@ -7,7 +7,8 @@ from chat.database import Base
 from chat.exceptions import PasswordValidationError, \
     EmailValidationError, \
     UserValidationError, \
-    PostValidationError
+    PostValidationError, \
+    RoomValidationError
 
 
 class User(Base):
@@ -73,3 +74,25 @@ class Post(Base):
             raise PostValidationError("Post content cannot be empty!")
         if len(content) > 250:
             raise PostValidationError("Content must be 250 characters at most.")
+
+
+class Room(Base):
+    __tablename__ = 'rooms'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), unique=True)
+    created_by = Column(Integer, ForeignKey(User.id))
+
+
+def __init__(self, name=None, user_id=None):
+    self._validate_name(name)
+    if user_id is None:
+        return RoomValidationError("No room creator id.")
+    self.name = name
+    self.created_by = user_id
+
+
+def _validate_name(self, name):
+    if name is None:
+        raise PostValidationError("Room name cannot be empty!")
+    if len(name) > 50:
+        raise PostValidationError("Name must be 50 characters at most.")

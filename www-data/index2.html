@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/style.css">
+    <script type="text/javascript" src="/js/signup.js"></script>
+    <title>Проектиране на Уеб-базирани Приложения - Микроблог</title>
+</head>
+<body>
+    <div id="error" onclick="this.style.display='none'" style="display: none"></div>
+    <h1>Създаване на профил</h1>
+    <form action="/v1/register" method="POST" onsubmit="return signupValidation()">
+    <div class="form-container">
+        <div class="form-item">
+        <label for="username">Потребителско име</label>
+        </div>
+        <div class="form-item">
+        <input type="text" name="username">
+        </div>
+        <div class="form-item">
+        <label for="password">Парола</label>
+        </div>
+        <div class="form-item">
+        <input type="password" name="password">
+        </div>
+        <div class="form-item">
+        <label for="password">Потвърждение на паролата</label>
+        </div>
+        <div class="form-item">
+        <input type="password" name="password_verification">
+        </div>
+        <label for="username">Пълно име</label>
+        </div>
+        <div class="form-item">
+        <input type="text" name="full_name">
+        </div>
+        <label for="username">E-mail</label>
+        </div>
+        <div class="form-item">
+        <input type="text" name="email">
+        </div>
+        <div class="form-item">
+        <input type="submit" value="Регистрация">
+        </div>
+    </div>
+    </form>
+    <h1>Вход в Микроблог</h1>
+    <form action="/v1/login" method="POST">
+    <div class="form-container">
+        <div class="form-item">
+        <label for="username">Потребителско име</label>
+        </div>
+        <div class="form-item">
+        <input type="text" name="username">
+        </div>
+        <div class="form-item">
+        <label for="password">Парола</label>
+        </div>
+        <div class="form-item">
+        <input type="password" name="password">
+        </div>
+        <div align="form-item">
+        <input type="submit" value="Вход">
+        </div>
+    </div>
+    </form>
+</body>
+</html>

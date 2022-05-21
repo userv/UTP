@@ -1,10 +1,12 @@
 <!doctype html>
 <html>
 <head>
-    <title>WebSocker Demo</title>
+    <title>ChatApp</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-<h1>WebSocket Demo</h1>
+<h1>Chat rooms</h1>
 <div id="log"></div>
 <br>
 <form id="form">
@@ -15,9 +17,9 @@
     let clients = [];
     let username = '{{ username}}';
 
-    window.addEventListener("DOMContentLoaded", () => {
-        setTimeout(sendPing, 35000);
-    })
+   //  window.addEventListener("DOMContentLoaded", () => {
+   //     setTimeout(sendPing, 35000);
+   // })
     const log = (text, color) => {
         document.getElementById('log').innerHTML += `<span style="color: ${color}">${text}</span><br>`;
     };
@@ -34,24 +36,24 @@
         message.message = 'connected';
         message.text = 'connected';
         socket.send(JSON.stringify(message));
-        console.log(`User {{ username }} is  connected.`);
+        console.log(`User {{ username }} has  connected.`);
     };
 
     socket.onmessage = ev => {
         let message = JSON.parse(ev.data);
-        if (message.message === 'pong') {
-            setTimeout(sendPing, 35000);
-            return;
-        }
+       // if (message.message === 'pong') {
+       //     setTimeout(sendPing, 35000);
+       //     return;
+        //}
         if (message.message === 'connected') {
-            log(message.username + ' is ' + message.text, 'green');
+            log(message.username + ' has ' + message.text, 'green');
             return;
         }
         log(message.username + ' => ' + message.text, 'blue');
     }
 
     socket.onclose = ev => {
-        console.log('Connection is closed.');
+        console.log('Connection has closed.');
         console.log('User {{username}} is disconnected.');
     }
 
