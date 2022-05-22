@@ -55,7 +55,7 @@
                 <nav id="sidebar">
                     <h4>Rooms</h4>
                     {% for room in rooms %}
-                        <p id="{{ room|title }}" class="select-room cursor-pointer">{{ room|title }}</p>
+                        <p id="{{ room.id}}" class="select-room cursor-pointer">{{ room.name|title }}</p>
                     {% endfor %}
                 </nav>
                 <!-- Sidebar end -->
@@ -87,7 +87,8 @@
         <span id="get-username">{{ username }}</span>
 
         <!-- Custom chat JS -->
-        <script src="{{ url_for('static', filename='scripts/chat_page.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/server.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/chat_page.js') }}"></script>
 
         <!-- Bootstrap -->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

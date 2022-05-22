@@ -8,7 +8,8 @@ from chat.exceptions import PasswordValidationError, \
     EmailValidationError, \
     UserValidationError, \
     PostValidationError, \
-    RoomValidationError
+    RoomValidationError, \
+    MessageValidationError
 
 
 class User(Base):
@@ -96,3 +97,29 @@ def _validate_name(self, name):
         raise PostValidationError("Room name cannot be empty!")
     if len(name) > 50:
         raise PostValidationError("Name must be 50 characters at most.")
+
+
+class Message(Base):
+    __tablename__ = 'messages'
+    id = Column(Integer, primary_key=True)
+    room_id = Column(Integer, ForeignKey(Room.id))
+    user_id = Column(Integer, ForeignKey(User.id))
+    content = Column(Text)
+    created_at = Column(DateTime, default=datetime.now())
+
+    def __init__(self, content=None, user_id=None, room_id=None):
+        self._validate_message(content, user_id, room_id)
+
+        self.content = content
+        self.user_id = user_id
+        self.room_id = room_id
+
+    def _validate_message(self, content, user_id, room_id):
+        if user_id is None:
+            return MessageValidationError("No user id!")
+        if room_id is None:
+            return MessageValidationError("No room id!")
+        # if content is None:
+        #     raise MessageValidationError("Message content cannot be empty!")
+        if len(content) > 250:
+            raise MessageValidationError("Content must be 250 characters at most.")

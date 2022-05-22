@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 from datetime import datetime
 from flask import Flask, request, render_template, make_response, \
     session, redirect, \
@@ -7,19 +8,20 @@ from flask_session import Session
 # from flask_socketio import SocketIO, emit
 from flask_sock import Sock
 from json import JSONEncoder
-
 from sqlalchemy.exc import NoResultFound
-
 from chat.authentication import authenticated
 from chat.exceptions import PasswordValidationError, \
     EmailValidationError, \
-    PostValidationError, RoomValidationError
+    PostValidationError, RoomValidationError, MessageValidationError
 from chat.database import db_session, init_db, Base
-from chat.models import User, Post
+from chat.models import User, Post, Room
 
 POSTS_PER_PAGE = 1
 clients = {}
-ROOMS = ['general', 'games', 'programming', 'news']
+ROOMS = defaultdict(list)
+
+
+# ROOMS = ['general', 'games', 'programming', 'news']
 
 
 class ImprovedEncoder(JSONEncoder):
@@ -179,7 +181,9 @@ def chat():
     if session.get('user') is None:
         return redirect(url_for('login'))
     else:
-        return render_template("chat.html", username=session.get('user').name, user_id=session.get('user').id)
+        rooms = Room.query.all()
+        return render_template("chat.html", username=session.get('user').name, user_id=session.get('user').id,
+                               rooms=rooms)
 
 
 @app.route("/room", methods=['GET', 'POST'])
@@ -211,13 +215,18 @@ def handle_messages(ws):
     user_id = json_data['user_id']
     username = json_data['username']
     text = json_data['text']
+    room = Room.query.filter(Room.name == 'general').first()
     if msg == 'open':
         clients[user_id] = ws
+        ROOMS[room.id].append(user_id)
         # ws.send(json.dumps({'message': 'connected', 'user_id': user_id, 'username': username, 'text': 'connected'}))
     # if msg == 'ping':
     #     ws.send(json.dumps({'message': 'pong'}))
     for client_id in clients:
         if client_id != user_id and msg == 'message' or msg == 'connected':
+            clients[client_id].send(data)
+    for room_id in ROOMS:
+        for client_id in ROOMS[room_id]:
             clients[client_id].send(data)
 
 
@@ -227,6 +236,14 @@ def create_room(room_name, user_id):
     db_session.add(room)
     db_session.commit()
     return room
+
+
+def save_message(room_id, user_id, content):
+    from chat.models import Message
+    message = Message(room_id=room_id, user_id=user_id, content=content)
+    db_session.add(message)
+    db_session.commit()
+    return message
 
 
 if __name__ == "__main__":
