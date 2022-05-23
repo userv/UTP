@@ -18,7 +18,7 @@ from chat.models import User, Post, Room
 
 POSTS_PER_PAGE = 1
 clients = {}
-ROOMS = defaultdict(list)
+ROOMS = defaultdict(set)
 
 
 # ROOMS = ['general', 'games', 'programming', 'news']
@@ -215,19 +215,35 @@ def handle_messages(ws):
     user_id = json_data['user_id']
     username = json_data['username']
     text = json_data['text']
-    room = Room.query.filter(Room.name == 'general').first()
+    room_id = json_data['room_id']
+    # room = Room.query.filter(Room.name == 'general').first()
     if msg == 'open':
         clients[user_id] = ws
-        ROOMS[room.id].append(user_id)
+    if msg == 'join':
+        join_room(room_id, user_id)
+    if msg == 'leave':
+        leave_room(room_id, user_id)
+
         # ws.send(json.dumps({'message': 'connected', 'user_id': user_id, 'username': username, 'text': 'connected'}))
     # if msg == 'ping':
     #     ws.send(json.dumps({'message': 'pong'}))
-    for client_id in clients:
-        if client_id != user_id and msg == 'message' or msg == 'connected':
-            clients[client_id].send(data)
-    for room_id in ROOMS:
-        for client_id in ROOMS[room_id]:
-            clients[client_id].send(data)
+    # for client_id in clients:
+    #     if client_id != user_id and msg == 'message' or msg == 'connected':
+    #         clients[client_id].send(data)
+    # for room_id in ROOMS:
+    #     print(f'room_id : {room_id}')
+    for client_id in ROOMS[room_id]:
+        # print(f'client_id : {client_id}')
+        # if msg == 'message' or msg == 'connected':
+        clients[client_id].send(data)
+
+
+def join_room(room_id, user_id):
+    ROOMS[room_id].add(user_id)
+
+
+def leave_room(room_id, user_id):
+    ROOMS[room_id].discard(user_id)
 
 
 def create_room(room_name, user_id):

@@ -1,7 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    let username = '{{ username}}';
-    let user_id = '{{ user_id}}';
+    const username = document.querySelector('#get-username').innerHTML;
+    const user_id = document.querySelector('#get-user_id').innerHTML;
+
+    let room_id = '1';
+    let room_name;
+
     // Connect to websocket
     const socket = new WebSocket('ws://' + location.host + '/api');
     socket.onopen = ws => {
@@ -9,7 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
             message: 'open',
             user_id: user_id,
             username: username,
-            text: 'Connection is open.'
+            text: 'Connection is open.',
+            room_id: room_id,           //TODO : change to room_id later
         }
         socket.send(JSON.stringify(message));
         message.message = 'connected';
@@ -19,23 +24,22 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     // Retrieve username
 
-    // const username = document.querySelector('#get-username').innerHTML;
+
     // Set default room
-    let room_id = '1';
-    let room_name = 'general';
+
 
     // joinRoom("Lounge");
 
     // Send messages
     document.querySelector('#send_message').onclick = () => {
-        let datetime =new Date().toLocaleString();
+        let datetime = new Date().toLocaleString();
         let message = {
             message: 'message',
             user_id: user_id,
             username: username,
             text: document.querySelector('#user_message').value,
             room_id: room_id,
-            created_at: datetime,
+            created_at: datetime
         }
         socket.send(JSON.stringify(message));
         // socket.send('incoming-msg', {
@@ -106,80 +110,84 @@ document.addEventListener('DOMContentLoaded', () => {
             let newRoom_name = p.innerHTML
             let newRoom_id = p.id
             // Check if user already in the room
+            // leaveRoom(room_id);
+            // joinRoom(newRoom_id);
+            // room_id = newRoom_id;
+            // room_name = newRoom_name;
             if (newRoom_id === room_id) {
                 let msg = `You are already in ${room_name} room.`;
                 printSysMsg(msg);
             } else {
                 leaveRoom(room_id);
                 joinRoom(newRoom_id);
+                room_id = newRoom_id;
                 room_name = newRoom_name;
+
             }
-        };
+        }
     });
 
-    // Logout from chat
-    document.querySelector("#logout-btn").onclick = () => {
-        leaveRoom(room_id);
-    };
+        // Logout from chat
+        document.querySelector("#logout-btn").onclick = () => {
+            leaveRoom(room_id);
+        };
 
-    // Trigger 'leave' event if user was previously on a room
-    function leaveRoom(room_id) {
-        let message = {
-            message: 'leave',
-            user_id: user_id,
-            username: username,
-            text: 'has joined to room',
-            room_id: room_id,
-            room_name: room_name
+        // Trigger 'leave' event if user was previously on a room
+        function leaveRoom(room_id) {
+            let message = {
+                message: 'leave',
+                user_id: user_id,
+                username: username,
+                text: 'has left the room',
+                room_id: room_id,
+            }
+            // Join room
+            socket.send(JSON.stringify(message));
+
+            document.querySelectorAll('.select-room').forEach(p => {
+                p.style.color = "black";
+            });
         }
-        // Join room
-        socket.send(JSON.stringify(message));
 
-        document.querySelectorAll('.select-room').forEach(p => {
-            p.style.color = "black";
-        });
-    }
+        // Trigger 'join' event
+        function joinRoom(room_id) {
 
-    // Trigger 'join' event
-    function joinRoom(room_id) {
+            let message = {
+                message: 'join',
+                user_id: user_id,
+                username: username,
+                text: 'has joined to room',
+                room_id: room_id,
+            }
+            // Join room
+            socket.send(JSON.stringify(message));
 
-        let message = {
-            message: 'join',
-            user_id: user_id,
-            username: username,
-            text: 'has joined to room',
-            room_id: room_id,
-            room_name: room_name
+            // Highlight selected room
+            document.querySelector('#' + CSS.escape(room_id)).style.color = "#ffc107";
+            document.querySelector('#' + CSS.escape(room_id)).style.backgroundColor = "white";
+
+            // Clear message area
+            document.querySelector('#display-message-section').innerHTML = '';
+
+            // Autofocus on text box
+            document.querySelector("#user_message").focus();
         }
-        // Join room
-        socket.send(JSON.stringify(message));
 
-        // Highlight selected room
-        document.querySelector('#' + CSS.escape(room)).style.color = "#ffc107";
-        document.querySelector('#' + CSS.escape(room)).style.backgroundColor = "white";
+        // Scroll chat window down
+        function scrollDownChatWindow() {
+            const chatWindow = document.querySelector("#display-message-section");
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
 
-        // Clear message area
-        document.querySelector('#display-message-section').innerHTML = '';
+        // Print system messages
+        function printSysMsg(msg) {
+            const p = document.createElement('p');
+            p.setAttribute("class", "system-msg");
+            p.innerHTML = msg;
+            document.querySelector('#display-message-section').append(p);
+            scrollDownChatWindow()
 
-        // Autofocus on text box
-        document.querySelector("#user_message").focus();
-    }
-
-    // Scroll chat window down
-    function scrollDownChatWindow() {
-        const chatWindow = document.querySelector("#display-message-section");
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-
-    // Print system messages
-    function printSysMsg(msg) {
-        const p = document.createElement('p');
-        p.setAttribute("class", "system-msg");
-        p.innerHTML = msg;
-        document.querySelector('#display-message-section').append(p);
-        scrollDownChatWindow()
-
-        // Autofocus on text box
-        document.querySelector("#user_message").focus();
-    }
-});
+            // Autofocus on text box
+            document.querySelector("#user_message").focus();
+        }
+    });
