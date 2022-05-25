@@ -81,7 +81,7 @@ def signup():
         return f"{exc}", 400
     except EmailValidationError as exc:
         return f"{exc}", 400
-    return '<p>Registration successful. Proceed to login <a href="/login.html">here</a></p>'
+    return redirect(url_for("login"))
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -168,12 +168,12 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route("/echo")
-def echo():
-    if session.get('user') is None:
-        return redirect(url_for('login'))
-    else:
-        return render_template("echo.html", username=session.get('user').name, user_id=session.get('user').id)
+# @app.route("/echo")
+# def echo():
+#     if session.get('user') is None:
+#         return redirect(url_for('login'))
+#     else:
+#         return render_template("echo.html", username=session.get('user').name, user_id=session.get('user').id)
 
 
 @app.route("/chat")
@@ -216,6 +216,7 @@ def handle_messages(ws):
     username = json_data['username']
     text = json_data['text']
     room_id = json_data['room_id']
+    # created_at = json_data['created_at']
     # room = Room.query.filter(Room.name == 'general').first()
     if msg == 'open':
         clients[user_id] = ws
@@ -227,14 +228,8 @@ def handle_messages(ws):
         # ws.send(json.dumps({'message': 'connected', 'user_id': user_id, 'username': username, 'text': 'connected'}))
     # if msg == 'ping':
     #     ws.send(json.dumps({'message': 'pong'}))
-    # for client_id in clients:
-    #     if client_id != user_id and msg == 'message' or msg == 'connected':
-    #         clients[client_id].send(data)
-    # for room_id in ROOMS:
-    #     print(f'room_id : {room_id}')
+
     for client_id in ROOMS[room_id]:
-        # print(f'client_id : {client_id}')
-        # if msg == 'message' or msg == 'connected':
         clients[client_id].send(data)
 
 

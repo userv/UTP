@@ -9,17 +9,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Connect to websocket
     const socket = new WebSocket('ws://' + location.host + '/api');
     socket.onopen = ws => {
+        // let message = {
+        //     message: 'open',
+        //     user_id: user_id,
+        //     username: username,
+        //     text: 'Connection is open.',
+        //     room_id: room_id,           //TODO : change to room_id later
+        // }
+       //  let datetime = new Date().toLocaleString();
         let message = {
             message: 'open',
             user_id: user_id,
             username: username,
-            text: 'Connection is open.',
+            text: 'has connected',
             room_id: room_id,           //TODO : change to room_id later
+            created_at: new Date().toLocaleString()
         }
         socket.send(JSON.stringify(message));
-        message.message = 'connected';
-        message.text = 'connected';
-        socket.send(JSON.stringify(message));
+        // message.message = 'connected';
+        // message.text = 'connected';
+        // socket.send(JSON.stringify(message));
         console.log(`User {{ username }} has  connected.`);
     };
     // Retrieve username
@@ -32,21 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Send messages
     document.querySelector('#send_message').onclick = () => {
-        let datetime = new Date().toLocaleString();
+        // let datetime = new Date().toLocaleString();
         let message = {
             message: 'message',
             user_id: user_id,
             username: username,
             text: document.querySelector('#user_message').value,
             room_id: room_id,
-            created_at: datetime
+            created_at: new Date().toLocaleString()
         }
         socket.send(JSON.stringify(message));
-        // socket.send('incoming-msg', {
-        //     'msg': document.querySelector('#user_message').value,
-        //     'username': username, 'room': room
-        // });
-
         document.querySelector('#user_message').value = '';
     };
 
@@ -133,12 +137,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Trigger 'leave' event if user was previously on a room
     function leaveRoom(room_id) {
+        // let datetime = new Date().toLocaleString();
         let message = {
             message: 'leave',
             user_id: user_id,
             username: username,
             text: 'has left the room',
             room_id: room_id,
+            created_at: new Date().toLocaleString()
         }
         // Join room
         socket.send(JSON.stringify(message));
@@ -150,19 +156,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Trigger 'join' event
     function joinRoom(room_id) {
-
+       // let datetime = new Date().toLocaleString();
         let message = {
             message: 'join',
             user_id: user_id,
             username: username,
             text: 'has joined to room',
             room_id: room_id,
+            created_at: new Date().toLocaleString()
         }
         // Join room
         socket.send(JSON.stringify(message));
 
         // Highlight selected room
-        document.querySelector('#' + CSS.escape(room_id)).style.color = "#ffc107";
+        document.querySelector('#' + CSS.escape(room_id)).style.color = "#cb9a40";
         document.querySelector('#' + CSS.escape(room_id)).style.backgroundColor = "white";
 
         // Clear message area
