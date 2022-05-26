@@ -197,7 +197,7 @@ def create_room():
         user_id = session.get('user').id
         try:
             new_room = create_room(room_name, user_id)
-            return redirect(url_for('echo', room_id=new_room.id))
+            return redirect(url_for('chat'))
         except RoomValidationError as exc:
             return {'error': str(exc)}
 
