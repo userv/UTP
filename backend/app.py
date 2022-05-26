@@ -14,7 +14,7 @@ from chat.exceptions import PasswordValidationError, \
     EmailValidationError, \
     PostValidationError, RoomValidationError, MessageValidationError
 from chat.database import db_session, init_db, Base
-from chat.models import User, Post, Room
+from chat.models import User, Post, Room, Message
 
 POSTS_PER_PAGE = 1
 clients = {}
@@ -216,7 +216,7 @@ def handle_messages(ws):
     username = json_data['username']
     text = json_data['text']
     room_id = json_data['room_id']
-    # created_at = json_data['created_at']
+    created_at = json_data['created_at']
     # room = Room.query.filter(Room.name == 'general').first()
     if msg == 'open':
         clients[user_id] = ws
@@ -228,6 +228,11 @@ def handle_messages(ws):
         # ws.send(json.dumps({'message': 'connected', 'user_id': user_id, 'username': username, 'text': 'connected'}))
     # if msg == 'ping':
     #     ws.send(json.dumps({'message': 'pong'}))
+    try:
+        if msg == 'message':
+            save_message(room_id, user_id, text, created_at)
+    except Exception as e:
+        pass
 
     for client_id in ROOMS[room_id]:
         clients[client_id].send(data)
@@ -249,9 +254,8 @@ def create_room(room_name, user_id):
     return room
 
 
-def save_message(room_id, user_id, content):
-    from chat.models import Message
-    message = Message(room_id=room_id, user_id=user_id, content=content)
+def save_message(room_id, user_id, text, created_at):
+    message = Message(room_id=room_id, user_id=user_id, content=text, created_at=created_at)
     db_session.add(message)
     db_session.commit()
     return message

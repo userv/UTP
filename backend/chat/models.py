@@ -107,12 +107,13 @@ class Message(Base):
     content = Column(Text)
     created_at = Column(DateTime, default=datetime.now())
 
-    def __init__(self, content=None, user_id=None, room_id=None):
+    def __init__(self, content=None, user_id=None, room_id=None, created_at=None):
         self._validate_message(content, user_id, room_id)
 
         self.content = content
         self.user_id = user_id
         self.room_id = room_id
+        self.created_at = created_at
 
     def _validate_message(self, content, user_id, room_id):
         if user_id is None:
