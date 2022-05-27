@@ -1,15 +1,23 @@
-{% extends "prelogin-layout.html" %}
+{% extends "layout.html" %}
 {% block title %}Create  {% endblock title %}
 
 {% block content %}
-    <h2>Get started!</h2>
-    <p>Create you chatroom</p>
-    <form action="/v1/room" method="POST">
-        <div class="form-group">
-            <label for="" room-name>Room name</label>
-            <input type="text" name="room-name">
-            <input type="submit" value="Create">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-6 col-md-4"></div>
+            <div class="col-xs-6 col-md-4">
+                <div class="my-5 ">
+                    <h4>Create you chatroom</h4>
+                    <form action="/v1/room" method="POST">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="room-name"
+                                   placeholder="Enter room name here...">
+                        </div>
+                        <input type="submit" value="Create">
+                    </form>
+                </div>
+            </div>
+            <div class="col-xs-6 col-md-4"></div>
         </div>
-    </form>
-
-{% endblock %}
+    </div>
+{% endblock content %}

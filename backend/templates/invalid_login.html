@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Грешка при влизане{% endblock %}
+{% block title %}Login error{% endblock %}
 {% block content %}
     <div id="error">
     <ul>
@@ -8,24 +8,30 @@
     {% endfor %}
     </ul>
     </div>
-    <h1>Вход в Микроблог</h1>
-    <form action="/v1/login" method="POST">
-        <div class="form-container">
-            <div class="form-item">
-            <label for="username">Потребителско име</label>
+    <<div class="container">
+        <div class="row">
+            <div class="col-xs-6 col-md-4"></div>
+            <div class="col-xs-6 col-md-4">
+                <h2>Login now!</h2>
+                <p>Enter you username/password to start Chat</p>
+
+                <form action="/v1/login" method="POST">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text"  class="form-control" name="username" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" name="password" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit"  value="Login" class="btn btn-warning">
+                    </div>
+                </form>
+                <hr>
+                <p>Have not registered? <a href={{ url_for('index') }}>Register here</a>.</p>
             </div>
-            <div class="form-item">
-            <input type="text" name="username">
-            </div>
-            <div class="form-item">
-            <label for="password">Парола</label>
-            </div>
-            <div class="form-item">
-            <input type="password" name="password">
-            </div>
-            <div align="form-item">
-            <input type="submit" value="Вход">
-            </div>
+            <div class="col-xs-6 col-md-4"></div>
         </div>
-    </form>
+    </div>
 {% endblock %}

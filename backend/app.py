@@ -12,34 +12,17 @@ from sqlalchemy.exc import NoResultFound
 from chat.authentication import authenticated
 from chat.exceptions import PasswordValidationError, \
     EmailValidationError, \
-    PostValidationError, RoomValidationError, MessageValidationError
+    RoomValidationError, MessageValidationError
 from chat.database import db_session, init_db, Base
-from chat.models import User, Post, Room, Message
+from chat.models import User, Room, Message
 
-POSTS_PER_PAGE = 1
+
 clients = {}
 ROOMS = defaultdict(set)
 
 
-# ROOMS = ['general', 'games', 'programming', 'news']
-
-
-class ImprovedEncoder(JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Base):
-            dict_repr = {}
-            for column in obj.__table__.columns:
-                value = getattr(obj, column.name)
-                dict_repr[column.name] = value
-            return dict_repr
-        elif isinstance(obj, datetime):
-            return obj.strftime("%Y-%m-%d %H:%M:%S")
-        else:
-            return super(ImprovedEncoder, self).default(obj)
-
-
 app = Flask(__name__)
-app.json_encoder = ImprovedEncoder
+# app.json_encoder = ImprovedEncoder
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_FILE_DIR'] = 'sessions'
 app.config['SESSION_FILE_MODE'] = 0o640
@@ -59,11 +42,6 @@ def shutdown_db_session(exception=None):
 @app.route('/')
 def index():
     return render_template('index.html')
-
-
-@app.route("/main")
-def main():
-    return render_template("main.html", username=session.get('user').name, user_id=session.get('user').id)
 
 
 @app.route("/register", methods=['POST'])
@@ -96,7 +74,6 @@ def login():
             session['user'] = user
             session['user_id'] = user.id
             response_str = redirect(url_for("chat", user_id=user.id))
-        # response_str = redirect(url_for("user", user_id=user.id))
         else:
             response_str = render_template("invalid_login.html", errors=[f"Invalid password for user {username}."])
     else:
@@ -107,73 +84,10 @@ def login():
     return response
 
 
-# @app.route("/post", methods=['GET', 'POST'])
-# @authenticated(session)
-# def post():
-#     if request.method == 'GET':
-#         return render_template("bak/post_form.html")
-#     if request.method == 'POST':
-#         post_obj = request.json
-#         if post_obj is None:
-#             title = request.form.get('title')
-#             content = request.form.get('content')
-#         else:
-#             title = post_obj['title']
-#             content = post_obj['content']
-#         author = session.get("user")
-#         try:
-#             new_post = Post(title, content, author.id)
-#             db_session.add(new_post)
-#             db_session.commit()
-#             return redirect(url_for("user", user_id=author.id))
-#         except PostValidationError as exc:
-#             if post_obj is None:
-#                 return render_template("bak/post_form.html", title=title, content=content, error=str(exc))
-#             else:
-#                 return {'error': str(exc)}
-
-
-# @app.route("/user/<user_id>", methods=['GET', 'POST'])
-# def user(user_id):
-#     if session.get('user') is not None:
-#         logged_in = True
-#     else:
-#         logged_in = False
-#     try:
-#         user = User.query.filter(User.id == user_id).one()
-#     except NoResultFound:
-#         return f"No user with ID {user_id} exists!", 404
-#     posts_count = Post.query.filter(Post.author == user_id).count()
-#     pages_count = int(posts_count / POSTS_PER_PAGE)
-#     current_page = request.args.get('page', 0)
-#     pages = range(0, pages_count)
-#     frmt = request.args.get('format', 'html')
-#     if len(pages) > 20:
-#         pages = pages[:3] + '|' + pages[pages:3] + '|' + pages[-3:]
-#     posts = Post.query.filter(Post.author == user_id).limit(POSTS_PER_PAGE).offset(current_page * POSTS_PER_PAGE).all()
-#     if frmt == 'json':
-#         return {'posts': posts,
-#                 'pages': list(pages),
-#                 'current_page': current_page,
-#                 'username': user.name,
-#                 'logged_in': logged_in}
-#     else:
-#         return render_template("bak/post_list.html", posts=posts, pages=pages, current_page=current_page,
-#                                username=user.name, logged_in=logged_in)
-
-
 @app.route("/logout")
 def logout():
     session.pop('user', None)
     return redirect(url_for('login'))
-
-
-# @app.route("/echo")
-# def echo():
-#     if session.get('user') is None:
-#         return redirect(url_for('login'))
-#     else:
-#         return render_template("echo.html", username=session.get('user').name, user_id=session.get('user').id)
 
 
 @app.route("/chat")
@@ -224,7 +138,6 @@ def handle_messages(ws):
         join_room(room_id, user_id)
     if msg == 'leave':
         leave_room(room_id, user_id)
-
         # ws.send(json.dumps({'message': 'connected', 'user_id': user_id, 'username': username, 'text': 'connected'}))
     # if msg == 'ping':
     #     ws.send(json.dumps({'message': 'pong'}))

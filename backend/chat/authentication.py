@@ -1,5 +1,6 @@
 from functools import wraps
 
+
 def authenticated(session):
     def deco_func(func):
         @wraps(func)
@@ -9,4 +10,5 @@ def authenticated(session):
             else:
                 return f"Invalid session", 401
         return wrapper
+
     return deco_func

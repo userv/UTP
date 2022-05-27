@@ -4,7 +4,7 @@
 }
 
 #main-section {
-    overflow: hidden; /* Makee this div contain its floated children */
+    overflow: hidden; /* Make this div contain its floated children */
     width: 100%;
 }
 
@@ -14,23 +14,27 @@
     min-height: 96vh;
     padding-left: 1em;
     padding-top: 3em;
-    padding-right:1em;
+    padding-right: 1em;
     border-right: 0.5px solid #898c91;
 }
 
 #sidebar p {
     padding-left: 2em;
-    padding-right:2em;
+    padding-right: 2em;
 }
 
 #sidebar p:hover {
     background-color: #ffc107;
 }
 
-#sidebar h4 {padding-left: 0.5em;}
+#sidebar h4 {
+    padding-left: 0.5em;
+}
 
 
-#sidebar.view-sidebar {display: none;}
+#sidebar.view-sidebar {
+    display: none;
+}
 
 #show-sidebar-button {
     visibility: hidden;
@@ -76,21 +80,25 @@
     bottom: 0;
 }
 
-input[type=text]:focus{
+input[type=text]:focus {
     border-color: #ffc107;
     box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 10px #ffc107;
 }
 
 @keyframes fadeIn {
-  0% {opacity: 0;}
-  100% {opacity: 1;}
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 .others-msg {
-    margin-right:27em;
+    margin-right: 29em;
     margin-left: 1em;
     padding: 0.5em 0.5em 0.5em 1em;
-    border-radius: 18px;
+    border-radius: 5px 18px 18px 18px;
     border-color: grey;
     border-width: 0.5px;
     border-style: none;
@@ -103,10 +111,10 @@ input[type=text]:focus{
 }
 
 .my-msg {
-    margin-left:27em;
-    margin-right:1em;
+    margin-left: 29em;
+    margin-right: 1em;
     padding: 0.5em 0.5em 0.5em 1em;
-    border-radius: 18px;
+    border-radius: 18px 5px 18px 18px;
     border-color: #206ED2;
     border-width: 1px;
     border-style: none;
@@ -119,27 +127,27 @@ input[type=text]:focus{
 }
 
 .system-msg {
-    margin-right:7em;
+    margin-right: 7em;
     margin-left: 1em;
     padding: 0.5em 0.5em 0.5em 1em;
     color: #656d78;
-    font-size:0.9em;
+    font-size: 0.9em;
 }
 
 .timestamp {
     color: #656d78;
-    font-size:0.7em;
+    font-size: 0.6em;
 }
 
 .other-username {
-    font-weight: bold;
-    font-size: 1.1em;
+    font-weight: normal;
+    font-size: 1.0em;
     color: #206ED2;
 }
 
 .my-username {
-    font-weight: bold;
-    font-size: 1.1em;
+    font-weight: normal;
+    font-size: 1.0em;
     color: #FF6B13;
 }
 
@@ -149,5 +157,8 @@ input[type=text]:focus{
 }
 
 #get-username {
+    display: none !important;
+}
+#get-user_id{
     display: none !important;
 }
