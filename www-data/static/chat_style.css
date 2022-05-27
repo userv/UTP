@@ -3,6 +3,10 @@
     display: flex;
 }
 
+.navbar {
+    background-color: #66a1ee
+}
+
 #main-section {
     overflow: hidden; /* Make this div contain its floated children */
     width: 100%;
@@ -159,6 +163,7 @@ input[type=text]:focus {
 #get-username {
     display: none !important;
 }
-#get-user_id{
+
+#get-user_id {
     display: none !important;
 }
