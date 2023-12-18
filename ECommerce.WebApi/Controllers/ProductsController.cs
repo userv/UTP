@@ -15,7 +15,7 @@ namespace ECommerce.WebApi.Controllers
 
         public ProductsController(ECommerceDbContext dbContext)
         {
-                this.db = dbContext;
+            this.db = dbContext;
         }
 
         // GET: api/<ProductsController>
@@ -41,15 +41,25 @@ namespace ECommerce.WebApi.Controllers
 
         // GET api/<ProductsController>/5
         [HttpGet("{id}")]
-        public string GetById(int id)
+        public async Task<ActionResult<Product>> GetById(int id)
         {
-            return "value";
+            var product = await db.Products.FindAsync(id);
+            if (product == null)
+            {
+                return this.NotFound();
+            }
+            return product;
         }
 
         // POST api/<ProductsController>
         [HttpPost]
-        public void Create([FromBody] ProductInputModel productInput)
+        public async Task<ActionResult<Product>> Create([FromBody] ProductInputModel productInput)
         {
+            if (!ModelState.IsValid)
+            {
+                return this.BadRequest();
+            }
+
             var product = new Product
             {
                 Name = productInput.Name,
@@ -58,8 +68,9 @@ namespace ECommerce.WebApi.Controllers
                 ImageUrl = productInput.ImageUrl,
                 CategoryId = productInput.CategoryId
             };
-            db.Products.Add(product);
-            db.SaveChanges();
+            await db.Products.AddAsync(product);
+            await db.SaveChangesAsync();
+            return this.CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
 
         }
 

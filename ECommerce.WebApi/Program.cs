@@ -1,10 +1,6 @@
-
-using System.Runtime.CompilerServices;
-using ECommerce.WebApi;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ECommerce.Demo.API
+namespace ECommerce.WebApi
 {
     public class Program
     {
@@ -18,11 +14,10 @@ namespace ECommerce.Demo.API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            Services.AddServices(builder.Services, builder);
-
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -41,7 +36,6 @@ namespace ECommerce.Demo.API
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

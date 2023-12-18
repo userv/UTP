@@ -4,19 +4,16 @@ using ECommerce.WebApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ECommerce.Demo.API.Migrations
+namespace ECommerce.WebApi.Migrations
 {
     [DbContext(typeof(ECommerceDbContext))]
-    [Migration("20231217124853_RemoveTestTables")]
-    partial class RemoveTestTables
+    partial class ECommerceDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

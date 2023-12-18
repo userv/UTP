@@ -3,27 +3,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ECommerce.Demo.API.Migrations
+namespace ECommerce.WebApi.Migrations
 {
     /// <inheritdoc />
-    public partial class AddProducts_Categories : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedOn",
-                table: "WeatherForecasts",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "ModifiedOn",
-                table: "WeatherForecasts",
-                type: "datetime2",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
@@ -79,7 +66,7 @@ namespace ECommerce.Demo.API.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -94,41 +81,6 @@ namespace ECommerce.Demo.API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.UpdateData(
-                table: "WeatherForecasts",
-                keyColumn: "Id",
-                keyValue: 1,
-                columns: new[] { "CreatedOn", "ModifiedOn" },
-                values: new object[] { new DateTime(2023, 12, 16, 13, 15, 34, 411, DateTimeKind.Local).AddTicks(7250), null });
-
-            migrationBuilder.UpdateData(
-                table: "WeatherForecasts",
-                keyColumn: "Id",
-                keyValue: 2,
-                columns: new[] { "CreatedOn", "ModifiedOn" },
-                values: new object[] { new DateTime(2023, 12, 16, 13, 15, 34, 411, DateTimeKind.Local).AddTicks(7308), null });
-
-            migrationBuilder.UpdateData(
-                table: "WeatherForecasts",
-                keyColumn: "Id",
-                keyValue: 3,
-                columns: new[] { "CreatedOn", "ModifiedOn" },
-                values: new object[] { new DateTime(2023, 12, 16, 13, 15, 34, 411, DateTimeKind.Local).AddTicks(7312), null });
-
-            migrationBuilder.UpdateData(
-                table: "WeatherForecasts",
-                keyColumn: "Id",
-                keyValue: 4,
-                columns: new[] { "CreatedOn", "ModifiedOn" },
-                values: new object[] { new DateTime(2023, 12, 16, 13, 15, 34, 411, DateTimeKind.Local).AddTicks(7315), null });
-
-            migrationBuilder.UpdateData(
-                table: "WeatherForecasts",
-                keyColumn: "Id",
-                keyValue: 5,
-                columns: new[] { "CreatedOn", "ModifiedOn" },
-                values: new object[] { new DateTime(2023, 12, 16, 13, 15, 34, 411, DateTimeKind.Local).AddTicks(7318), null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
@@ -147,14 +99,6 @@ namespace ECommerce.Demo.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
-
-            migrationBuilder.DropColumn(
-                name: "CreatedOn",
-                table: "WeatherForecasts");
-
-            migrationBuilder.DropColumn(
-                name: "ModifiedOn",
-                table: "WeatherForecasts");
         }
     }
 }
