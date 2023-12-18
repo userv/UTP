@@ -48,7 +48,7 @@ namespace ECommerce.WebApi.Controllers
             {
                 return this.NotFound();
             }
-            return product;
+            return this.Ok(product);
         }
 
         // POST api/<ProductsController>
@@ -76,14 +76,42 @@ namespace ECommerce.WebApi.Controllers
 
         // PUT api/<ProductsController>/5
         [HttpPut("{id}")]
-        public void Edit(int id, [FromBody] string value)
+        public async Task<ActionResult> Edit(int id, [FromBody] ProductInputModel productInput)
         {
+            // Code logic for editing the product
+            if (!ModelState.IsValid)
+            {
+                this.BadRequest();
+            }
+            var product = await db.Products.FindAsync(id);
+            if (product == null)
+            {
+                return this.NotFound();
+            }
+            product.Name = productInput.Name;
+            product.Description = productInput.Description;
+            product.Price = productInput.Price;
+            product.ImageUrl = productInput.ImageUrl;
+            product.CategoryId = productInput.CategoryId;
+            await db.SaveChangesAsync();
+            return this.Ok(product);
+
         }
 
         // DELETE api/<ProductsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
+            // Code logic for deleting the product
+            var product = await db.Products.FindAsync(id);
+            if (product == null)
+            {
+                return this.NotFound();
+            }
+            db.Products.Remove(product);
+            await db.SaveChangesAsync();
+            return this.Ok();
+
         }
     }
 }
