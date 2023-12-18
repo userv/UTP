@@ -41,7 +41,7 @@ namespace ECommerce.WebApi.Controllers
 
         // GET api/<ProductsController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetById(int id)
+        public async Task<ActionResult> GetById(int id)
         {
             var product = await db.Products.FindAsync(id);
             if (product == null)
@@ -53,7 +53,7 @@ namespace ECommerce.WebApi.Controllers
 
         // POST api/<ProductsController>
         [HttpPost]
-        public async Task<ActionResult<Product>> Create([FromBody] ProductInputModel productInput)
+        public async Task<ActionResult> Create([FromBody] ProductInputModel productInput)
         {
             if (!ModelState.IsValid)
             {
@@ -93,6 +93,7 @@ namespace ECommerce.WebApi.Controllers
             product.Price = productInput.Price;
             product.ImageUrl = productInput.ImageUrl;
             product.CategoryId = productInput.CategoryId;
+            product.ModifiedOn = DateTime.UtcNow;
             await db.SaveChangesAsync();
             return this.Ok(product);
 
