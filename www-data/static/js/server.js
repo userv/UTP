@@ -20,12 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
         socket.send(JSON.stringify(message));
     };
 
-    document.getElementById("user_message").addEventListener("keyup", function (event) {
-        event.preventDefault();
-        if (event.key === "Enter") {
-            document.getElementById("send_message").click();
-        }
-    });
+    // document.getElementById("user_message").addEventListener("keyup", function (event) {
+    //     event.preventDefault();
+    //     if (event.key === "Enter") {
+    //         document.getElementById("send_message").click();
+    //     }
+    // });
     // Send messages
     document.querySelector('#send_message').onclick = () => {
         // let datetime = new Date().toLocaleString();
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const span_timestamp = document.createElement('span');
             const br = document.createElement('br')
             // Display user's own message
-            if (data.username == username) {
+            if (data.username === username) {
                 p.setAttribute("class", "my-msg");
 
                 // Username
@@ -105,15 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
             joinRoom(newRoom_id);
             room_id = newRoom_id;
             room_name = newRoom_name;
-            // if (newRoom_id === room_id) {
-            //     let msg = `You are already in ${room_name} room.`;
-            //     printSysMsg(msg);
-            // } else {
-            //     leaveRoom(room_id);
-            //     joinRoom(newRoom_id);
-            //     room_id = newRoom_id;
-            //     room_name = newRoom_name;
-            // }
         }
     });
 
@@ -172,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    // Print system messages
+    // // Print system messages
     function printSysMsg(msg) {
         const p = document.createElement('p');
         p.setAttribute("class", "system-msg");
